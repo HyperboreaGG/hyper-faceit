@@ -1,18 +1,33 @@
 // ==UserScript==
 // @name         Hyper FaceIt
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  try to take over the world!
 // @author       You
 // @match        https://*.faceit.com/*
 // @grant        none
 // @require      https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js
 // @require      https://cdn.jsdelivr.net/gh/khaimovmr/wshook@0.1.2/wsHook.js
-// @require      https://cdn.jsdelivr.net/gh/hyperboreagg/hyper-faceit-assets@0.3.1/wshook-init.js
 // ==/UserScript==
 
 (function() {
     'use strict';
+
+    window.wsHook.after = function(messageEvent, url, wsObject) {
+        if (typeof(messageEvent.data) != 'string') {
+            return messageEvent;
+        }
+
+        var bodyStart = messageEvent.data.search('<body>');
+        var bodyEnd = messageEvent.data.search('</body>');
+
+        if (bodyStart > -1 && bodyEnd > -1) {
+            let message = messageEvent.data.slice(bodyStart + 6, bodyEnd);
+            console.log(message);
+        }
+
+        return messageEvent;
+    }
 
     $(document).ready(function() {
         let styleElement = document.createElement('style');
